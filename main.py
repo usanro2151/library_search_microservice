@@ -58,14 +58,45 @@ def post_movie():
 def get_all_movies():
     # fetch movies from datastore. define query
     query = client.query(kind = MOVIES)
-    result = list(query.fetch())                # fetch is a query method. use the query method 'fetch' to return the list of movies
+    movies = list(query.fetch())                # fetch is a query method. use the query method 'fetch' to return the list of movies
 
-    # add movie id to each of the movies before returning result
-    for movie in result:
+    # Add movie ID to each movie
+    for movie in movies:
         movie['id'] = movie.key.id
     
-    return result
+    # Get query parameters
+    title = request.args.get("title")
+    genre = request.args.get("genre")
+    min_rating = request.args.get("min_rating")
 
+    filtered = movies
+
+    # filter by title (case-insensitive)
+    if title:
+        new_list = []
+        for movie in filtered:
+            if movie['title'].lower() == title.lower():
+                new_list.append(movie)
+        filtered = new_list
+
+    # filter by genre 
+    if genre:
+        new_list = []
+        for movie in filtered:
+            if movie['genre'].lower() == genre.lower():
+                new_list.append(movie)
+        filtered = new_list
+    
+    # filter by min_rating
+    if min_rating:
+        new_list = []
+        for movie in filtered:
+            if float(movie['rating']) >= float(min_rating):
+                new_list.append(movie)
+        filtered = new_list
+    
+    return filtered
+    
 @app.route('/' + MOVIES + '/<int:id>', methods = ['GET'])
 def get_a_movie_by_id(id):
     movie_key = client.key(MOVIES, id)
@@ -108,30 +139,6 @@ def delete_a_movie(id):
     
     client.delete(movie_key)
     return ('', 204)
-
-# @app.route('/owners/<int:owner_id>/businesses', methods = ['GET'])
-# def list_all_businesses_for_owner(owner_id):
-#     # get query parameters from request
-#     query = client.query(kind = BUSINESSES)
-#     all_businesses = list(query.fetch())
-#     result = []
-#     for biz in all_businesses:
-#         if biz['owner_id'] == owner_id:
-#             biz['id'] = biz.key.id
-#             result.append(biz)
-#     return result
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
