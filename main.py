@@ -22,7 +22,8 @@ def has_all_necessary_data_for_movie(movie):
     ('year' in attributes) and \
     ('genre' in attributes) and \
     ('director' in attributes) and \
-    ('description' in attributes) 
+    ('description' in attributes) and \
+    ('rating' in attributes)
 
     return result
 
@@ -42,7 +43,8 @@ def post_movie():
             'year': content['year'],
             'genre': content['genre'],
             'director': content['director'],
-            'description': content['description']
+            'description': content['description'], 
+            'rating':content['rating']
         })
         client.put(new_movie)
 
@@ -88,7 +90,8 @@ def edit_a_movie(id):
             'year': content['year'],
             'genre': content['genre'],
             'director': content['director'],
-            'description': content['description']
+            'description': content['description'],
+            'rating': content['rating']
         })
         client.put(movie)
         movie['id'] = movie.key.id
