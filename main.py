@@ -67,7 +67,7 @@ def get_all_movies():
     # Get query parameters
     title = request.args.get("title")
     genre = request.args.get("genre")
-    min_rating = request.args.get("min_rating")
+    rating = request.args.get("rating")
 
     filtered = movies
 
@@ -87,11 +87,11 @@ def get_all_movies():
                 new_list.append(movie)
         filtered = new_list
     
-    # filter by min_rating
-    if min_rating:
+    # filter by rating: G, PG, PG-13, R
+    if rating:
         new_list = []
         for movie in filtered:
-            if float(movie['rating']) >= float(min_rating):
+            if movie['rating'].lower() == rating.lower():
                 new_list.append(movie)
         filtered = new_list
     
